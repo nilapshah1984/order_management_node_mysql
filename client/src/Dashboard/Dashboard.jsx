@@ -1,313 +1,3 @@
-// import { Input } from "antd";
-// import axios from "axios";
-// import { useState, useEffect } from "react";
-// import styled from "styled-components";
-// import { BiSearch } from "react-icons/bi";
-
-// // function isDateString(dateString) {
-// //   return !isNaN(Date.parse(dateString));
-// // }
-
-// function getTodayDate() {
-//   const today = new Date();
-//   const yyyy = today.getFullYear();
-//   const mm = String(today.getMonth() + 1).padStart(2, "0");
-//   const dd = String(today.getDate()).padStart(2, "0");
-//   return `${yyyy}-${mm}-${dd}`;
-// }
-
-// const StyledDv = styled.div`
-//   display: flex;
-//   align-items: center;
-//   justify-content: space-around;
-//   padding: 10px;
-//   gap: 10px;
-// `;
-
-// const StyledTable = styled.table`
-//   width: 370px;
-//   font-size: 18px;
-// `;
-
-// function Dashboard() {
-//   const [purchase, setItem] = useState([]);
-//   const [sales, setSale] = useState([]);
-//   const [rems, setRem] = useState([]);
-
-//   useEffect(() => {
-//     axios
-//       .get("http://localhost:8000/po/getpo")
-//       .then((res) => {
-//         setItem(res.data);
-//       })
-//       .catch((error) => {
-//         console.error("Error fetching purchase orders:", error);
-//       });
-
-//     axios
-//       .get("http://localhost:8000/customerPo/getCustomerPo")
-//       .then((res) => {
-//         setSale(res.data);
-//       })
-//       .catch((error) => {
-//         console.error("Error fetching customer POs:", error);
-//       });
-//     axios
-//       .get("http://localhost:8000/customerPo/getRemainingPurchaseOrder")
-//       .then((res) => {
-//         if (res.data.success) {
-//           setRem(res.data.data);
-//         } else {
-//           console.error("Error: No data found");
-//           setRem([]);
-//         }
-//       })
-//       .catch((error) => {
-//         console.error("Error fetching remaining purchase orders:", error);
-//         setRem([]);
-//       });
-//   }, []);
-
-//   const purchaseAmount = purchase.reduce((total, po) => {
-//     // return (
-//     //   total + po.item.reduce((itemTotal, item) => itemTotal + item.price, 0)
-//     // );
-//   }, 0);
-
-//   const orderAmount = sales.reduce(
-//     (total, sale) => total + (parseFloat(sale.cost) || 0),
-//     0
-//   );
-
-//   const RemAmount = rems.reduce((acc, rem) => acc + rem.price, 0);
-
-//   function handleDateChange(event) {
-//     const selectedDate = event.target.value;
-//     if (isDateString(selectedDate)) {
-//       console.log("Valid date:", selectedDate);
-//     } else {
-//       console.log("Invalid date:", selectedDate);
-//     }
-//   }
-
-//   const todayDate = getTodayDate();
-
-//   const [dropdownOpenCustomer, setDropdownOpenCustomer] = useState(false);
-//   const [dropdownOpenPO, setDropdownOpenPO] = useState(false);
-//   const [dropdownOpenCustomerPO, setDropdownOpenCustomerPO] = useState(false);
-
-//   const [selectedCustomer, setSelectedCustomer] = useState("");
-//   const [selectedPO, setSelectedPO] = useState("");
-//   const [selectedCustomerPO, setSelectedCustomerPO] = useState("");
-
-//   const toggleDropdownCustomer = () => {
-//     setDropdownOpenCustomer(!dropdownOpenCustomer);
-//   };
-
-//   const toggleDropdownPO = () => {
-//     setDropdownOpenPO(!dropdownOpenPO);
-//   };
-
-//   const toggleDropdownCustomerPO = () => {
-//     setDropdownOpenCustomerPO(!dropdownOpenCustomerPO);
-//   };
-
-//   const handleCustomerSelect = (customer) => {
-//     setSelectedCustomer(customer);
-//     setDropdownOpenCustomer(false);
-//   };
-
-//   const handlePOSelect = (po) => {
-//     setSelectedPO(po);
-//     setDropdownOpenPO(false);
-//   };
-
-//   const handleCustomerPOSelect = (customerPO) => {
-//     setSelectedCustomerPO(customerPO);
-//     setDropdownOpenCustomerPO(false);
-//   };
-
-//   return (
-//     <>
-//       <div className="container">
-//         <h1>Dashboard - Profit & Loss</h1>
-//         <div className="StyledDiv">
-//           <div className="LeftContainer">
-//             <div className="dropdowncontainer">
-//               <div className="StyledIn" onClick={toggleDropdownCustomer}>
-//                 {selectedCustomer || "Customer Name"}
-//               </div>
-//               {dropdownOpenCustomer && (
-//                 <div className="dropdownoption">
-//                   {sales.map((sale) => (
-//                     <div
-//                       className="option"
-//                       key={sale.id}
-//                       onClick={() => handleCustomerSelect(sale.des)}
-//                     >
-//                       {sale.des}
-//                     </div>
-//                   ))}
-//                 </div>
-//               )}
-//             </div>
-//             <div className="dropdowncontainer">
-//               <div className="StyledIn" onClick={toggleDropdownCustomerPO}>
-//                 {selectedCustomerPO || "Customer PO"}
-//               </div>
-//               {dropdownOpenCustomerPO && (
-//                 <div className="dropdownoption">
-//                   {sales.map((sale) => (
-//                     <div
-//                       className="option"
-//                       key={sale.id}
-//                       onClick={() => handleCustomerPOSelect(sale.des)}
-//                     >
-//                       {sale.des}
-//                     </div>
-//                   ))}
-//                 </div>
-//               )}
-//             </div>
-//             <div className="dropdowncontainer">
-//               <div className="StyledIn" onClick={toggleDropdownPO}>
-//                 {selectedPO || "Purchase Order"}
-//               </div>
-//               {dropdownOpenPO && (
-//                 <div className="dropdownoption">
-//                   {purchase.map((item) => (
-//                     <div
-//                       className="option"
-//                       key={item.id}
-//                       onClick={() => handlePOSelect(item.des)}
-//                     >
-//                       {item.des}
-//                     </div>
-//                   ))}
-//                 </div>
-//               )}
-//             </div>
-//             Start Date
-//             <input
-//               type="date"
-//               id="orderDate"
-//               onChange={handleDateChange}
-//               max={todayDate}
-//               className="StyledIn"
-//             />
-//             End Date
-//             <input
-//               type="date"
-//               id="endDate"
-//               onChange={handleDateChange}
-//               max={todayDate}
-//               className="StyledIn"
-//             />
-//           </div>
-
-//           <button
-//             className="StyledButtonSearch"
-//             // onClick={handleSearch}
-//             style={{ marginLeft: "10px" }}
-//           >
-//             <BiSearch />
-//             Search
-//           </button>
-//         </div>
-
-//         <StyledDv>
-//           <div className="tables">
-//             <h3>Customer PO Details</h3>
-//             <StyledTable className="table table-bordered table-striped table-hover shadow">
-//               <thead className="table-secondary">
-//                 <tr>
-//                   <th>Description</th>
-//                   <th>Qty</th>
-//                   <th>Price</th>
-//                 </tr>
-//               </thead>
-//               <tbody>
-//                 {sales.map((sale, index) => (
-//                   <tr key={sale.id || index}>
-//                     <td>{sale.CustomerName}</td>
-//                     <td>{sale.SalesOrderNumber}</td>
-//                     <td>{sale.SalesTotalPrice}</td>
-//                   </tr>
-//                 ))}
-//               </tbody>
-//             </StyledTable>
-
-//             <h3>Order Amount: {Number(orderAmount || 0).toFixed(2)}</h3>
-//           </div>
-// <div>
-//   <h3>Purchase Order</h3>
-//   <StyledTable className="table table-bordered table-striped table-hover shadow">
-//     <thead className="table-secondary">
-//       <tr>
-//         <th>Description</th>
-//         <th>Qty</th>
-//         <th>Price</th>
-//       </tr>
-//     </thead>
-
-//     <tbody>
-//       {purchase.map((item) => (
-//         <tr key={item.CustomerName}>
-//           <td>
-//             {item?.item?.[0]?.CustomerName
-//               ? item.item[0].CustomerName
-//               : ""}
-//           </td>
-//           <td>
-//             {item?.item?.[0]?.qtyAllocated
-//               ? item.item[0].qtyAllocated
-//               : ""}
-//           </td>
-//           <td>
-//             {item?.item?.[0]?.price
-//               ? Number(item.item[0].price).toFixed(2)
-//               : ""}
-//           </td>
-//         </tr>
-//       ))}
-//     </tbody>
-//   </StyledTable>
-//   {/* <h3>Purchase Amount: {purchaseAmount.toFixed(2)}</h3> */}
-// </div>
-//           <div>
-//             <h3>Remaining Purchase Order</h3>
-//             <StyledTable className="table table-bordered table-striped table-hover shadow">
-//               <thead className="table-secondary">
-//                 <tr>
-//                   <th>Description</th>
-//                   <th>Qty</th>
-//                   <th>Price</th>
-//                 </tr>
-//               </thead>
-//               <tbody>
-//                 {rems.map((rem, index) => (
-//                   <tr key={index}>
-//                     <td>{rem.name}</td>
-//                     <td>{rem.qty}</td>
-
-//                     <td>{Number(rem.price || 0).toFixed(2)}</td>
-//                   </tr>
-//                 ))}
-//               </tbody>
-//             </StyledTable>
-
-//             <h3>Remaining Purchase: {parseFloat(RemAmount || 0).toFixed(2)}</h3>
-//           </div>
-//         </StyledDv>
-
-//         {/* <h2>Profit/Loss: {(orderAmount - purchaseAmount).toFixed(2)}</h2> */}
-//       </div>
-//     </>
-//   );
-// }
-
-// export default Dashboard;
-
 import axios from "axios";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
@@ -335,83 +25,218 @@ const StyledTable = styled.table`
 `;
 
 function Dashboard() {
-  const [sales, setSales] = useState([]);
-  const [rems, setRems] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [customerPOs, setCustomerPOs] = useState([]);
+  const [purchaseOrders, setPurchaseOrders] = useState([]);
   const [salesItems, setSalesItems] = useState([]);
   const [purchaseItems, setPurchaseItems] = useState([]);
-  const [purchase, setPurchase] = useState([]);
+  const [rems, setRems] = useState([]);
+  const [selectedCPO, setSelectedCPO] = useState("");
+  const [selectedPO, setSelectedPO] = useState("");
 
+  const [dropdownOpenCustomer, setDropdownOpenCustomer] = useState(false);
+  const [dropdownOpenCustomerPO, setDropdownOpenCustomerPO] = useState(false);
+  const [dropdownOpenPurchaseOrder, setDropdownOpenPurchaseOrder] =
+    useState(false);
+
+  const [selectedCustomer, setSelectedCustomer] = useState("");
+  const [selectedCustomerPO, setSelectedCustomerPO] = useState("");
+  const [selectedPurchaseOrder, setSelectedPurchaseOrder] = useState("");
+
+  const toggleDropdownCustomer = () =>
+    setDropdownOpenCustomer(!dropdownOpenCustomer);
+  const toggleDropdownCustomerPO = () =>
+    setDropdownOpenCustomerPO(!dropdownOpenCustomerPO);
+
+  const handleCustomerSelect = (customer) => {
+    setSelectedCustomer(customer);
+    setDropdownOpenCustomer(false);
+    fetchCustomerPOs(customer.CustomerID);
+  };
+
+  const handleCustomerPOSelect = (po) => {
+    setSelectedCustomerPO(po);
+    setSelectedCPO(po);
+    setDropdownOpenCustomerPO(false);
+  };
+
+  const toggleDropdownPurchaseOrder = () => {
+    setDropdownOpenPurchaseOrder(!dropdownOpenPurchaseOrder);
+  };
+
+  const handlePurchaseOrderSelect = (purchaseOrder) => {
+    setSelectedPurchaseOrder(purchaseOrder);
+    setDropdownOpenPurchaseOrder(false);
+    setSelectedPO(purchaseOrder);
+  };
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8000/po/getpo")
-      .then((res) => setPurchase(res.data))
-      .catch((error) =>
-        console.error("Error fetching purchase orders:", error)
+    const fetchPurchaseOrders = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/po/getpo");
+
+        const purchaseOrderNumbers = response.data.map(
+          (purchase) => purchase.PurchaseOrderNumber
+        );
+
+        setPurchaseOrders(purchaseOrderNumbers);
+      } catch (error) {
+        console.error("Error fetching purchase data:", error);
+      }
+    };
+
+    fetchPurchaseOrders();
+  }, []);
+
+  useEffect(() => {
+    const fetchCustomerPOs = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/customerpo/getCustomerPo"
+        );
+        const salesOrderNumbers = response.data.map(
+          (item) => item.SalesOrderNumber
+        );
+        setCustomerPOs(salesOrderNumbers);
+      } catch (error) {
+        console.error("Error fetching customer POs:", error);
+      }
+    };
+
+    fetchCustomerPOs();
+  }, []);
+
+  // Fetch Customers
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        const result = await axios.get(
+          "http://localhost:8000/customer/getCustomerData"
+        );
+        setCustomers(result.data);
+      } catch (err) {
+        console.error("Error fetching customers:", err);
+      }
+    };
+    fetchCustomers();
+  }, []);
+
+  // Fetch Customer POs based on Customer ID
+  const fetchCustomerPOs = async (customerID) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/customerpo/getCustomerPOs/${customerID}`
       );
-      
-     axios
-      .get("http://localhost:8000/customerPo/getRemainingPurchaseOrder")
-      .then((res) => {
-        if (res.data.success) {
-          setRems(res.data.data);
-        } else {
-          console.error("Error: No data found");
-          setRems([]);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching remaining purchase orders:", error);
-        setRems([]);
-      });
+      if (response.data.success) {
+        setCustomerPOs(response.data.data);
+      } else {
+        console.error("Error: No Customer POs found.");
+        setCustomerPOs([]);
+      }
+    } catch (err) {
+      console.error("Error fetching Customer POs:", err);
+      setCustomerPOs([]);
+    }
+  };
+
+  // Fetch Data for Tables
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/po/getpurchaseorderitems")
+      .then((res) => setPurchaseItems(res.data.data || []))
+      .catch((err) =>
+        console.error("Error fetching purchase order items:", err)
+      );
 
     axios
       .get("http://localhost:8000/customerpo/getcustomersalesorderitems")
-      .then((res) => {
-        if (res.data && res.data.data) {
-          setSalesItems(res.data.data);
-        } else {
-          console.error("No data found in sales order items response.");
-        }
-      })
-      .catch((error) =>
-        console.error("Error fetching sales order items:", error)
-      );
-      // Fetch Purchase Order Items
-    axios
-    .get("http://localhost:8000/po/getpurchaseorderitems")
-    .then((res) => {
-      if (res.data && res.data.data) {
-        setPurchaseItems(res.data.data);
-      } else {
-        console.error("No data found in purchase order items response.");
-      }
-    })
-    .catch((error) =>
-      console.error("Error fetching purchase order items:", error)
-    );
+      .then((res) => setSalesItems(res.data.data || []))
+      .catch((err) => console.error("Error fetching sales order items:", err));
+
+    // axios
+    //   .get("http://localhost:8000/customerPo/getRemainingPurchaseOrder")
+    //   .then((res) => setRems(res.data.data || []))
+    //   .catch((err) =>
+    //     console.error("Error fetching remaining purchase orders:", err)
+    //   );
   }, []);
 
-  const orderAmount = sales.reduce(
-    (total, sale) => total + (parseFloat(sale.cost) || 0),
+  const salesorderAmount = salesItems.reduce(
+    (total, item) => total + (parseFloat(item.SalesPrice) || 0),
     0
   );
 
-  const RemAmount = rems.reduce((acc, rem) => acc + rem.price, 0);
+  const orderAmount = purchaseItems.reduce(
+    (total, item) => total + (parseFloat(item.PurchasePrice) || 0),
+    0
+  );
+
+  const RemAmount = rems.reduce(
+    (acc, rem) => acc + (parseFloat(rem.price) || 0),
+    0
+  );
 
   return (
     <div className="container">
       <h1>Dashboard - Profit & Loss</h1>
       <div className="StyledDiv">
         <div className="LeftContainer">
+          {/* Customer Dropdown */}
           <div className="dropdowncontainer">
-            <div className="StyledIn">Customer Name</div>
+            <button className="StyledIn" onClick={toggleDropdownCustomer}>
+              {selectedCustomer.Name || "Select Customer"}
+            </button>
+            {dropdownOpenCustomer && (
+              <div className="dropdownoption">
+                {customers.map((customer) => (
+                  <div
+                    key={customer.CustomerID}
+                    className="option"
+                    onClick={() => handleCustomerSelect(customer)}
+                  >
+                    {customer.Name}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
+          {/* Customer PO Dropdown */}
           <div className="dropdowncontainer">
-            <div className="StyledIn">Customer PO</div>
+            <button className="StyledIn" onClick={toggleDropdownCustomerPO}>
+              {selectedCustomerPO || "Select CPO"}
+            </button>
+            {dropdownOpenCustomerPO && (
+              <div className="dropdownoption">
+                {customerPOs.map((po, index) => (
+                  <div
+                    key={index}
+                    className="option"
+                    onClick={() => handleCustomerPOSelect(po)}
+                  >
+                    {po}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
+          {/* Purchase Order Dropdown */}
           <div className="dropdowncontainer">
-            <div className="StyledIn">Purchase Order</div>
+            <button className="StyledIn" onClick={toggleDropdownPurchaseOrder}>
+              {selectedPurchaseOrder || "Select PO"}
+            </button>
+            {dropdownOpenPurchaseOrder && (
+              <div className="dropdownoption">
+                {purchaseOrders.map((po, index) => (
+                  <div
+                    className="option"
+                    key={index}
+                    onClick={() => handlePurchaseOrderSelect(po)}
+                  >
+                    {po}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           Start Date
           <input type="date" max={getTodayDate()} className="StyledIn" />
@@ -427,7 +252,11 @@ function Dashboard() {
 
       <StyledDv>
         <div className="tables">
-          <h3>Customer PO Details</h3>
+          <h3>Customer PO Details: {selectedCPO}</h3>
+          {/* <h3>
+  Customer PO Details: <span style={{ color: 'black' }}>{selectedCPO}</span>
+</h3> */}
+
           <StyledTable className="table table-bordered table-striped table-hover shadow">
             <thead className="table-secondary">
               <tr>
@@ -447,11 +276,13 @@ function Dashboard() {
             </tbody>
           </StyledTable>
 
-          <h3>Order Amount: {Number(orderAmount || 0).toFixed(2)}</h3>
+          <h3>
+            Sales Order Amount: {Number(salesorderAmount || 0).toFixed(2)}
+          </h3>
         </div>
 
         <div>
-          <h3>Purchase Order Details</h3>
+          <h3>Purchase Order Details: {selectedPO}</h3>
           <StyledTable className="table table-bordered table-striped table-hover shadow">
             <thead className="table-secondary">
               <tr>
@@ -465,11 +296,13 @@ function Dashboard() {
                 <tr key={index}>
                   <td>{item.ItemName}</td>
                   <td>{item.AllocatedQty}</td>
-                  <td>{Number(item.PurchasePrice).toFixed(2)}</td>
+                  <td>{Number(item.PurchasePrice || 0).toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>
           </StyledTable>
+
+          <h3>Purchase Order Amount: {Number(orderAmount || 0).toFixed(2)}</h3>
         </div>
 
         <div>

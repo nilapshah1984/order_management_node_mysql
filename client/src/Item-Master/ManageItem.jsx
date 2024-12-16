@@ -15,7 +15,7 @@ import { MdDelete } from "react-icons/md";
 import axios from "axios";
 import { Tooltip, Pagination, Popconfirm } from "antd";
 import "../Style/Customer.css";
-import { useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function ManageItem() {
   const [items, setItems] = useState([]);
@@ -181,7 +181,7 @@ function ManageItem() {
         data: { ItemID: ItemID },
       })
       .then(() => {
-        alert("Item deleted successfully");
+        toast.success("Item deleted successfully");
         setItems((prevItems) =>
           prevItems.filter((item) => item.ItemID !== ItemID)
         );

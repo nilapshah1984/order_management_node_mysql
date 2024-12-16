@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import toast from "react-hot-toast";
 
-
 const Modal = styled.div`
   position: fixed;
   z-index: 100;
@@ -13,6 +12,7 @@ const Modal = styled.div`
 `;
 
 const AddItem = ({ editItem, closeModal }) => {
+
   const initialData = {
     ItemID: null,
     ProviderID: "1",
@@ -42,31 +42,35 @@ const AddItem = ({ editItem, closeModal }) => {
       setItemUnits(unitsRes.data);
     } catch (err) {
       console.error("Error fetching data:", err);
+      toast.error("Failed to load suppliers or item units.");
     }
   };
+
 
   useEffect(() => {
     loadData();
   }, []);
 
+
   useEffect(() => {
-    if (editItem) {
+    if (editItem && editItem.ItemID) {
       setFormData({
         ItemID: editItem.ItemID,
         ProviderID: "1",
-        SupplierID: editItem.SupplierID,
-        Name: editItem.Name,
-        Category: editItem.Category,
-        Brand: editItem.Brand,
-        Status: editItem.Status,
-        Description: editItem.Description,
-        ItemUnitID: editItem.ItemUnitID,
+        SupplierID: editItem.SupplierID || "",
+        Name: editItem.Name || "",
+        Category: editItem.Category || "",
+        Brand: editItem.Brand || "",
+        Status: editItem.Status || "",
+        Description: editItem.Description || "",
+        ItemUnitID: editItem.ItemUnitID || "",
       });
     } else {
-      setFormData({ ...initialData });
+      setFormData({ ...initialData }); 
     }
   }, [editItem]);
 
+ 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -75,36 +79,40 @@ const AddItem = ({ editItem, closeModal }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+ 
+  const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!formData.SupplierID || !formData.Name) {
       toast.error("Please fill out all required fields.");
       return;
     }
-  
-    const apiUrl = editItem
+
+    const isEditMode = editItem && editItem.ItemID;
+    const apiUrl = isEditMode
       ? "http://localhost:8000/item/updateItems"
       : "http://localhost:8000/item/add_items";
-  
-    axios
-      .post(apiUrl, formData)
-      .then((response) => {
+
+    try {
+      const response = await axios.post(apiUrl, formData);
+      if (response.data.error) {
+        toast.error(response.data.message || "Failed to process request.");
+      } else {
         toast.success(
-          editItem ? "Item updated successfully!" : "Item added successfully!"
+          isEditMode
+            ? "Item updated successfully!"
+            : "Item added successfully!"
         );
-        window.location.reload();
+        // window.location.reload();
         loadData();
-        closeModal(); 
-      })
-      .catch((error) => {
-        toast.error("Something went wrong. Please try again.");
-        console.error("Error:", error);
-      });
-  
+        closeModal();
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Something went wrong. Please try again.");
+    }
     setFormVisible(false);
   };
-  
 
   const handleCancel = (e) => {
     e.preventDefault();
@@ -118,7 +126,7 @@ const AddItem = ({ editItem, closeModal }) => {
           <Modal ref={modalRef}>
             <form onSubmit={handleSubmit} className="customer-form">
               <h3 className="form-heading">
-                {editItem ? "Edit Item" : "Add Item"}
+                {editItem && editItem.ItemID ? "Edit Item" : "Add Item"}
               </h3>
 
               <label className="customer-form__label">
@@ -162,7 +170,6 @@ const AddItem = ({ editItem, closeModal }) => {
                   value={formData.Category}
                   onChange={handleInputChange}
                   className="customer-form__input"
-                  required
                 />
               </label>
 
@@ -174,7 +181,6 @@ const AddItem = ({ editItem, closeModal }) => {
                   value={formData.Brand}
                   onChange={handleInputChange}
                   className="customer-form__input"
-                  required
                 />
               </label>
 
@@ -195,7 +201,6 @@ const AddItem = ({ editItem, closeModal }) => {
                   value={formData.ItemUnitID}
                   onChange={handleInputChange}
                   className="customer-form__input"
-                  required
                 >
                   <option value="">Select Unit</option>
                   {itemUnits.map((unit) => (
@@ -214,7 +219,7 @@ const AddItem = ({ editItem, closeModal }) => {
                   onChange={handleInputChange}
                   className="customer-form__input"
                 >
-                  <option>Select Status</option>
+                  <option value="">Select Status</option>
                   <option value={1}>Active</option>
                   <option value={0}>Inactive</option>
                 </select>

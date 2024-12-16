@@ -3,7 +3,6 @@ import pool from "../utils/db.js";
 
 const router = express.Router();
 
-// Utility function for sending error responses
 const sendErrorResponse = (res, statusCode, message, details = null) => {
   res.status(statusCode).json({ error: true, message, details });
 };
@@ -96,10 +95,10 @@ router.post("/add_items", async (req, res) => {
   }
 
   const sql = `
-  INSERT INTO items 
-  (ProviderID, SupplierID, Name, Category, Brand, Status, Description, ItemUnitID, Stock) 
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-`;
+    INSERT INTO items 
+    (ProviderID, SupplierID, Name, Category, Brand, Status, Description, ItemUnitID, Stock) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
 
   const values = [
     ProviderID || 1,
@@ -110,12 +109,16 @@ router.post("/add_items", async (req, res) => {
     Status,
     Description,
     ItemUnitID,
-    Stock,
+    Stock || 0,
   ];
 
   try {
     const [result] = await pool.query(sql, values);
-    res.status(201).json({ added: true, data: req.body });
+    res.status(201).json({
+      added: true,
+      message: "Item added successfully",
+      data: req.body,
+    });
   } catch (err) {
     console.error("Error inserting data:", err);
     res
@@ -124,6 +127,7 @@ router.post("/add_items", async (req, res) => {
   }
 });
 
+// Update Items
 router.post("/updateItems", async (req, res) => {
   const {
     SupplierID,
