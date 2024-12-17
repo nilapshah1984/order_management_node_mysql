@@ -5,6 +5,7 @@ import "../Style/Customer.css";
 import { Tooltip, Popconfirm, Pagination } from "antd";
 import { MdDelete } from "react-icons/md";
 import { BiSolidEdit } from "react-icons/bi";
+import toast from "react-hot-toast";
 
 const Modal = styled.div`
   position: fixed;
@@ -76,28 +77,26 @@ function ItemPrice({ handleClose, selectedItemName, selectedItemId }) {
           `http://localhost:8000/itemPrice/updateItemPrice/${editItemId}`,
           formData
         );
-        alert("Item price updated successfully!");
+        toast.success("Item price updated successfully!");
       } else {
         await axios.post(
           "http://localhost:8000/itemPrice/addItemPrice",
           formData
         );
-        alert("Item price added successfully!");
+        toast.success("Item price added successfully!");
       }
       fetchItemPrices(selectedItemId);
       resetForm();
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Failed to add/update item price: " + error.message);
+      toast.error("Failed to add/update item price: " + error.message);
     }
   };
 
   const handleEditItem = (item) => {
     setFormData({
       ...item,
-      PurchaseDate: new Date(item.PurchaseDate)
-        .toISOString()
-        .split("T")[0], // Format the date for the input field
+      PurchaseDate: new Date(item.PurchaseDate).toISOString().split("T")[0], // Format the date for the input field
     });
     setIsEditing(true);
     setEditItemId(item.ItemStockID);
@@ -111,10 +110,10 @@ function ItemPrice({ handleClose, selectedItemName, selectedItemId }) {
       setItemPriceData((prev) =>
         prev.filter((item) => item.ItemStockID !== id)
       );
-      alert("Item price deleted successfully!");
+      toast.success("Item price deleted successfully!");
     } catch (error) {
       console.error("Error deleting item:", error);
-      alert("Failed to delete item price: " + error.message);
+      toast.success("Failed to delete item price: " + error.message);
     }
   };
 
@@ -256,9 +255,11 @@ function ItemPrice({ handleClose, selectedItemName, selectedItemId }) {
                       <td>{item.PurchasePrice}</td>
                       <td>{item.Qty}</td>
                       <td>
-                        {new Date(item.PurchaseDate)
-                          .toISOString()
-                          .split("T")[0]}
+                        {
+                          new Date(item.PurchaseDate)
+                            .toISOString()
+                            .split("T")[0]
+                        }
                       </td>
                       <td>
                         <div className="buttons-group">

@@ -68,35 +68,31 @@ function AddCustomer({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+  
     if (!formData.Email || !formData.Name || !formData.Phone) {
-      alert("Please fill out all required fields.");
+      toast.warn("Please fill out all required fields.");
       return;
     }
-
+  
     const apiUrl = editingCustomer
       ? "http://localhost:8000/customer/updateCustomer"
       : "http://localhost:8000/customer/add_customer";
-
+  
     axios
       .post(apiUrl, formData)
       .then((response) => {
-        // alert(
-        //   editingCustomer
-        //     ? "Customer updated successfully"
-        //     : "Customer saved successfully"
-        // );
         toast.success(
           editingCustomer
-          ? "Customer updated successfully"
+            ? "Customer updated successfully"
             : "Customer saved successfully"
-        )
+        );
         window.location.reload();
       })
       .catch((error) => {
-        alert("Something went wrong. Try again.");
+        toast.error("Something went wrong. Try again.");
         console.error("Error:", error);
       });
-
+  
     setShowForm(false);
     closeModal();
   };

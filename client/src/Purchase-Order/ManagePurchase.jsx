@@ -86,6 +86,7 @@ function ManagePurchase() {
 
   const handleDelete = async (index) => {
     const purchaseOrderNumber = filteredData[index].PurchaseOrderNumber;
+
     try {
       const response = await fetch(
         "http://localhost:8000/po/deletePurchaseOrder",
@@ -97,6 +98,7 @@ function ManagePurchase() {
           body: JSON.stringify({ PurchaseOrderNumber: purchaseOrderNumber }),
         }
       );
+
       if (response.ok) {
         toast.success("Purchase Order deleted successfully!");
         const updatedPurchaseData = [...purchaseData];
@@ -104,13 +106,13 @@ function ManagePurchase() {
         setPurchaseData(updatedPurchaseData);
         setFilteredData(updatedPurchaseData);
       } else if (response.status === 404) {
-        alert("Purchase order not found.");
+        toast.error("Purchase order not found.");
       } else {
-        alert("An error occurred while deleting the purchase order.");
+        toast.error("An error occurred while deleting the purchase order.");
       }
     } catch (error) {
       console.error("Error deleting purchase order:", error);
-      alert("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     }
   };
 

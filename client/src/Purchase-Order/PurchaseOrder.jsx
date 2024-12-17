@@ -75,7 +75,6 @@ const PurchaseOrder = ({
       items,
     };
 
-
     try {
       let response;
 
@@ -85,16 +84,13 @@ const PurchaseOrder = ({
           data
         );
 
-
         if (response.status === 200 || response.status === 201) {
-          // alert("Purchase order updated successfully");
           toast.success("Purchase order updated successfully");
         }
       } else {
         response = await axios.post("http://localhost:8000/po/insertpo", data);
 
         if (response.status === 200 || response.status === 201) {
-          // alert("Purchase order Saved successfully");
           toast.success("Purchase order Saved successfully");
         }
       }
@@ -117,7 +113,7 @@ const PurchaseOrder = ({
       );
       setStatus(existingOrder.Status);
       setPurchaseOrderNumber(existingOrder.PurchaseOrderNumber);
-    } 
+    }
   }, [existingOrder]);
 
   const handleAddItemClick = () => {

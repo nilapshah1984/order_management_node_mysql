@@ -76,7 +76,6 @@ function ManageCustomer() {
         data: { email },
       })
       .then(() => {
-        // alert("Customer deleted successfully");
         toast.success("Customer deleted successfully");
         setCustomers(customers.filter((customer) => customer.email !== email));
         setFilteredCustomers(
@@ -274,17 +273,15 @@ function ManageCustomer() {
           onOk={() => setVisible(false)}
           onCancel={() => setVisible(false)}
           footer={null}
-        >
-          </Modal>
-          {showModal && (
-            <AddCustomer
-              customers={customers}
-              closeModal={closeModal}
-              editingCustomer={editingCustomer}
-              updateCustomerList={updateCustomerList}
-            />
-          )}
-        
+        ></Modal>
+        {showModal && (
+          <AddCustomer
+            customers={customers}
+            closeModal={closeModal}
+            editingCustomer={editingCustomer}
+            updateCustomerList={updateCustomerList}
+          />
+        )}
       </div>
     </>
   );

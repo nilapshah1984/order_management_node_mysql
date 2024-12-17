@@ -112,27 +112,28 @@ function Home() {
   // Handle form submission
   const onSubmit = async (e) => {
     e.preventDefault();
+  
     if (validForm()) {
-      console.log("Submitting login form with:", credentials); // Check the console output
-
+      console.log("Submitting login form with:", credentials);
+  
       try {
         const { data } = await axios.post("http://localhost:8000/auth/login", {
           email: credentials.email,
           password: credentials.password,
         });
-        toast.success("User Login Successfully");
-        // alert("User Login Successfully", data);
+  
         if (data?.result) {
+          toast.success("User Login Successfully");
           navigate("/dashboard");
         } else {
-          alert("Incorrect email or password");
+          toast.error("Incorrect email or password");
         }
       } catch (error) {
         console.error(
           "Error logging in:",
           error.response ? error.response.data : error
         );
-        alert("An error occurred while logging in");
+        toast.error("An error occurred while logging in");
       }
     }
   };

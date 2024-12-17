@@ -98,13 +98,13 @@ function ManageCPO() {
         setSalesData(updatedSalesData);
         setFilteredData(updatedSalesData);
       } else if (response.status === 404) {
-        alert("Sales order not found.");
+        toast.error("Sales order not found.");
       } else {
-        alert("An error occurred while deleting the sales order.");
+        toast.error("An error occurred while deleting the sales order.");
       }
     } catch (error) {
       console.error("Error deleting sales order:", error);
-      alert("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     }
   };
 
