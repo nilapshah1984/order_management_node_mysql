@@ -255,8 +255,6 @@ router.put("/editpurchaseorderitems", async (req, res) => {
     PurchaseOrderID,
   } = req.body;
 
-  console.log("Request Body:", req.body);
-
   if (!PurchaseOrderItemID || !ItemID) {
     return res
       .status(400)
@@ -332,7 +330,6 @@ INNER JOIN items i ON si.ItemID = i.ItemID
   con
     .query(query)
     .then(([rows, fields]) => {
-      console.log(rows);
       res.status(200).json({ data: rows });
     })
     .catch((err) => {

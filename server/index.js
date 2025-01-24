@@ -12,6 +12,7 @@ import { itempriceRouter } from "./routes/itemPrice.js";
 dotenv.config();
 const app = express();
 
+
 app.use(cors({ origin: '*' }));
 
 // app.use(cors({

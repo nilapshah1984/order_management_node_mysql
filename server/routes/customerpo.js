@@ -5,7 +5,6 @@ const router = express.Router();
 
 router.post("/insertCustomerPo", async (req, res) => {
   const { CustomerID, SalesOrderNumber, SalesDate, Status } = req.body;
-  console.log(req.body);
 
   if (!CustomerID || !SalesOrderNumber || !SalesDate) {
     return res.status(400).send("All fields are required.");
@@ -42,7 +41,6 @@ router.post("/insertCustomerPo", async (req, res) => {
   }
 });
 
-
 router.get("/getCustomerPo", async (req, res) => {
   const sql = `
     SELECT 
@@ -57,14 +55,12 @@ router.get("/getCustomerPo", async (req, res) => {
 
   try {
     const [results] = await con.query(sql);
-    console.log("Backend Response:", results); // Backend console
     res.status(200).json(results);
   } catch (err) {
     console.error("Error fetching sales orders:", err);
     res.status(500).send("An error occurred while fetching sales orders.");
   }
 });
-
 
 // router.put("/updateCustomerPo/:SalesOrderNumber", async (req, res) => {
 //   const { SalesOrderNumber } = req.params;
@@ -118,10 +114,10 @@ router.get("/getCustomerPo", async (req, res) => {
 //   }
 // });
 
-
 router.put("/updateCustomerPo/:CustomerSalesOrderID", async (req, res) => {
   const { CustomerSalesOrderID } = req.params;
-  const { CustomerID, ProviderID, SalesDate, Status, SalesTotalPrice, Items } = req.body;
+  const { CustomerID, ProviderID, SalesDate, Status, SalesTotalPrice, Items } =
+    req.body;
 
   const connection = await con.getConnection();
   try {
@@ -168,12 +164,13 @@ router.put("/updateCustomerPo/:CustomerSalesOrderID", async (req, res) => {
   } catch (error) {
     await connection.rollback();
     console.error("Error updating sales order:", error);
-    res.status(500).json({ message: "Failed to update sales order", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Failed to update sales order", error: error.message });
   } finally {
     connection.release();
   }
 });
-
 
 router.delete("/deleteCustomerPo", async (req, res) => {
   const { CustomerSalesOrderID } = req.body;
@@ -287,7 +284,6 @@ router.put("/editsalesorderitem", async (req, res) => {
       .json({ message: "CustomerSalesOrderID is required." });
   }
 
-
   const updateItemQuery = `
     UPDATE customersalesorderitems
     SET 
@@ -357,7 +353,6 @@ router.get("/getcustomersalesorderitems", (req, res) => {
     });
 });
 
-
 router.delete("/deleteItem/:CustomerSalesOrderItemID", async (req, res) => {
   const { CustomerSalesOrderItemID } = req.params;
 
@@ -421,6 +416,5 @@ router.delete("/deleteItem/:CustomerSalesOrderItemID", async (req, res) => {
     });
   }
 });
-
 
 export { router as customerPo };

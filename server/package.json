@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "nodemon index.js",
-    "build": "npm i"
+    "build": "npm i",
+    "debug": "ndb index.js"
   },
   "author": "",
   "license": "ISC",
@@ -22,6 +23,7 @@
     "import": "^0.0.6",
     "mysql": "^2.18.1",
     "mysql2": "^3.11.0",
+    "ndb": "^1.1.5",
     "nodemailer": "^6.9.14",
     "nodemon": "^3.1.4"
   }

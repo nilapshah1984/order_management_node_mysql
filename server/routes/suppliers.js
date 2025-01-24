@@ -26,7 +26,6 @@ router.post("/add_supplier", async (req, res) => {
 
   try {
     const [result] = await pool.query(sql, values);
-    console.log(`Inserted ${result.affectedRows} row(s)`);
     res.json({ added: true, data: formData });
   } catch (err) {
     console.error("Error inserting data:", err.stack);

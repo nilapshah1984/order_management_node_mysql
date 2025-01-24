@@ -484,8 +484,6 @@
 import { Link } from "react-router-dom";
 import AddNewCustomer from "./AddNewCustomer";
 
-
-
 function User() {
   return (
     <>

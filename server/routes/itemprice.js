@@ -55,8 +55,6 @@ router.post("/addItemPrice", async (req, res) => {
     // Update items table after insertion
     const [updateResult] = await con.query(updateSql, [ItemID]);
 
-    console.log("Update Result:", updateResult);
-
     res.status(201).json({
       message: "Item price added successfully and stock updated",
       ItemID: insertResult.insertId,
